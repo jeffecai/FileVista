@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.4.2-1D3B63?style=flat-square" alt="version" /></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.5.0-1D3B63?style=flat-square" alt="version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1D3B63?style=flat-square" alt="license" /></a>
   <img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-4B5055?style=flat-square" alt="platform" />
   <img src="https://img.shields.io/badge/electron-38-4B5055?style=flat-square" alt="electron" />
@@ -22,7 +22,7 @@
   <img src="docs/shots/main.png" alt="FileVista 双栏列表视图" />
 </p>
 
-> **状态**：0.4.2，可日常使用的 MVP。仅支持 Windows，暂无签名安装包。  
+> **状态**：0.5.0，可日常使用的 MVP。仅支持 Windows，暂无签名安装包。  
 > **English**：FileVista is a dual-pane Windows file manager with a restrained paper-and-ink interface, a command palette, native shell integration, and no telemetry.
 
 ---
@@ -87,6 +87,7 @@
 | **列表** | 名称 / 大小 / 修改时间，列头排序，行内选中条 |
 | **小图标** | 网格布局，适合快速扫视 |
 | **超大图标** | 系统缩略图（图片 / 视频 / ICO），右侧自动打开图片预览 |
+| **彩色图标** | 文件夹按名称取 6 套配色；27 种常见类型各有独立彩色图标；EXE、快捷方式、未知类型读取 Windows 原生图标 |
 | **预览抽屉** | 文本（≤256 KB）、图片（≤12 MB）、尺寸、修改时间、路径 |
 | **缩略图缓存** | 主进程按 `路径 + mtime + 尺寸` 缓存，最多 600 张，分批加载 |
 
@@ -111,8 +112,8 @@
 | <img src="docs/shots/main.png" alt="双栏列表" /> | <img src="docs/shots/quad.png" alt="四宫格" /> |
 | **小图标** | **超大图标 + 预览** |
 | <img src="docs/shots/views-icons.png" alt="小图标视图" /> | <img src="docs/shots/views-xlarge.png" alt="超大图标与预览" /> |
-| **此电脑 · 容量条** | **状态栏迷你容量条** |
-| <img src="docs/shots/thispc.png" alt="此电脑" /> | 每个窗格右下角显示当前磁盘的迷你渐变条与可用空间 |
+| **此电脑 · 容量条** | **彩色图标 · 类型识别** |
+| <img src="docs/shots/thispc.png" alt="此电脑" /> | <img src="docs/shots/color-icons.png" alt="彩色文件类型图标" /> |
 
 ---
 
@@ -127,11 +128,11 @@
 
 ### 安装版（推荐，任务栏固定）
 
-运行 `release\FileVista-Setup-0.4.2.exe`，按用户安装（无需管理员）。安装器会创建开始菜单和桌面快捷方式：
+运行 `release\FileVista-Setup-0.5.0.exe`，按用户安装（无需管理员）。安装器会创建开始菜单和桌面快捷方式：
 
 ```text
-release\FileVista-Setup-0.4.2.exe      # 安装版
-release\FileVista-Portable-0.4.2.exe   # 免安装便携版
+release\FileVista-Setup-0.5.0.exe      # 安装版
+release\FileVista-Portable-0.5.0.exe   # 免安装便携版
 ```
 
 安装后从开始菜单启动 FileVista，再右键任务栏图标 → **固定到任务栏**，固定的就是 **FileVista**。
@@ -226,6 +227,16 @@ native\ShellMenu.exe --path .\README.md --dump
 
 这样误点 `X` 不会中断长复制，也不会丢失会话。
 
+### 7. 彩色图标
+
+地址栏的调色板按钮（或 `Ctrl+K` → “切换彩色/单色图标”）控制图标风格。
+
+彩色模式下：
+
+- 文件夹根据名称哈希分配 6 套配色（蓝 / 青 / 紫 / 琥珀 / 玫瑰 / 绿）。
+- 27 类文件各有独立图标：图片、视频、音频、压缩包、代码、文本、Markdown、JSON、配置、PDF、Word、Excel、PPT、字体、数据库、设计稿、3D、镜像、可执行文件、快捷方式等。
+- EXE、`.lnk`、`.url` 和未识别类型调用 Windows `app.getFileIcon`，显示系统真实图标。
+
 ---
 
 ## 键盘
@@ -271,6 +282,7 @@ FileVista 的视觉母题是**对开账簿**：两栏是一本书摊开的两页
 - **字体**：Newsreader（标题/品牌）+ IBM Plex Sans（文件名）+ IBM Plex Mono（数字/路径），中文标题由 Noto Serif SC 承接。
 - **结构**：无卡片、无装饰渐变；标签是书页索引签，选中是 2px 墨蓝竖条。
 - **动效**：只有一个 120ms 的响应动画；容量条是唯一持续动画，并可被“减少动态效果”关闭。
+- **图标**：默认彩色模式，为 27 类文件绘制了独立卡片图标，文件夹按名称哈希取色；单色模式保留 Lucide 线条图标。
 
 完整规范见 [docs/DESIGN.md](docs/DESIGN.md)。
 
@@ -345,6 +357,7 @@ npm run start          # 构建后启动
 npm run test           # 文件系统引擎自测（17 项，无窗口）
 npm run test:drag      # CDP 模拟外部拖放
 npm run build:native   # 重建 ShellMenu.exe 与 FileVista.exe
+npm run icons          # 重新生成 27 个彩色类型图标
 npm run dist:win       # 安装包 + 便携版
 npm run pack:win       # 未打包目录（调试用）
 npm run smoke          # 构建并截图到 smoke*.png

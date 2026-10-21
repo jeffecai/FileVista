@@ -1053,3 +1053,12 @@ button:focus-visible, input:focus-visible { outline: 1px solid var(--accent); ou
   .drive-percent { display: none; }
   .drive-total { display: none; }
 }
+/* ---------- theme file icons ---------- */
+
+.file-icon {
+  display: block;
+  object-fit: contain;
+  flex: none;
+}
+
+.entry-icon .file-icon { width: 18px; height: 18px; }

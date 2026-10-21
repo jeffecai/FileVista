@@ -79,6 +79,7 @@ export default function CommandPalette() {
     { id: 'sort-size', label: '排序：大小', run: () => { state.setSort(pane, 'size'); state.closePalette(); } },
     { id: 'sort-mtime', label: '排序：修改时间', run: () => { state.setSort(pane, 'mtime'); state.closePalette(); } },
     { id: 'thispc', label: '此电脑（驱动器与剩余空间）', run: () => go('::thispc') },
+    { id: 'color-mode', label: state.colorMode ? '切换为单色图标' : '切换为彩色图标', run: () => { state.toggleColorMode(); state.closePalette(); } },
     { id: 'new-tab', label: '新建标签', hint: 'Ctrl+T', run: () => { state.newTab(pane); state.closePalette(); } },
     { id: 'close-tab', label: '关闭当前标签', hint: 'Ctrl+W', run: () => { state.closeTab(pane, tab.id); state.closePalette(); } },
     { id: 'switch-pane', label: '切换到另一栏', hint: 'Tab', run: () => { state.activatePane(other); state.closePalette(); } },

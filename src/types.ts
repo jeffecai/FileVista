@@ -103,6 +103,7 @@ export interface SessionData {
   showHidden: boolean;
   compact: boolean;
   previewOpen: boolean;
+  colorMode: boolean;
   panes: Partial<Record<PaneId, {
     tabs: Array<{ path: string; sort: SortState }>;
     activeIndex: number;
@@ -135,6 +136,7 @@ export interface FolioApi {
   shellMenu(path: string): Promise<boolean>;
   getPathForFile(file: File): string;
   thumbnails(paths: string[], size: number): Promise<Record<string, string | null>>;
+  fileIcons(paths: string[], large: boolean): Promise<Record<string, string | null>>;
   win(action: 'min' | 'max' | 'close'): Promise<{ maximized: boolean } | null>;
   menu(items: Array<{ id?: string; label?: string; type?: string; enabled?: boolean }>): Promise<string | null>;
   onProgress(cb: (p: Progress) => void): () => void;

@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('folio', {
   places: () => invoke('folio:places'),
   preview: (path) => invoke('folio:preview', path),
   thumbnails: (paths, size) => invoke('folio:thumbnails', paths, size),
+  fileIcons: (paths, large) => invoke('folio:fileIcons', paths, large),
   mkdir: (path) => invoke('folio:mkdir', path),
   rename: (from, to) => invoke('folio:rename', from, to),
   trash: (paths) => invoke('folio:trash', paths),

@@ -15,6 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README rewritten with feature tables, screenshots, keyboard reference, and
   build instructions.
 
+## [0.5.0] - 2026-10-22
+
+### Added
+
+- Colour icon mode: 27 hand-drawn SVG type icons, six folder colour variants
+  chosen by name hash, and native Windows icons for executables, shortcuts and
+  unknown types.
+- Colour/monochrome toggle in the path bar and command palette; the preference
+  is stored in the session.
+
 ## [0.4.2] - 2026-10-22
 
 ### Added

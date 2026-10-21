@@ -361,6 +361,39 @@ handle('folio:thumbnails', async (_event, paths, size) => {
   }
   return out;
 });
+
+const fileIconCache = new Map();
+handle('folio:fileIcons', async (_event, paths, large) => {
+  const list = Array.isArray(paths)
+    ? paths.filter((p) => typeof p === 'string' && p.length > 0).slice(0, 120)
+    : [];
+  const size = large ? 'large' : 'normal';
+  const out = {};
+  const loadOne = async (target) => {
+    const key = `${size}:${target}`;
+    if (fileIconCache.has(key)) {
+      out[target] = fileIconCache.get(key);
+      return;
+    }
+    try {
+      const image = await app.getFileIcon(target, { size });
+      const url = image && !image.isEmpty() ? image.toDataURL() : null;
+      fileIconCache.set(key, url);
+      while (fileIconCache.size > 800) {
+        const first = fileIconCache.keys().next().value;
+        if (!first) break;
+        fileIconCache.delete(first);
+      }
+      out[target] = url;
+    } catch {
+      out[target] = null;
+    }
+  };
+  for (let index = 0; index < list.length; index += 6) {
+    await Promise.all(list.slice(index, index + 6).map(loadOne));
+  }
+  return out;
+});
 handle('folio:mkdir', (_event, target) => svc.makeDir(target));
 handle('folio:rename', (_event, from, to) => svc.rename(from, to));
 handle('folio:trash', (_event, targets) => svc.trash(targets));

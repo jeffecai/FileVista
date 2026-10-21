@@ -211,6 +211,17 @@ All visual decisions live in `src/styles.css` as custom properties. The design
 language is documented in [DESIGN.md](DESIGN.md). Do not introduce Tailwind,
 CSS-in-JS, or component libraries.
 
+### Icons
+
+- `scripts/generate-file-icons.mjs` generates the 27 SVG theme icons in
+  `src/assets/icons/`; run `npm run icons` after editing the generator.
+- `src/lib/fileIcons.ts` maps extensions and special filenames to those icons.
+  Folder colours are chosen by hashing the folder name.
+- Executables, shortcuts and unrecognised types use Windows icons through the
+  `folio:fileIcons` IPC channel (`app.getFileIcon`), cached in the main process.
+- `src/lib/useNativeFileIcons.ts` batches requests for visible rows only.
+- The colour/monochrome preference is persisted in the session (`colorMode`).
+
 ## Performance
 
 - Virtual scrolling for lists and grids.

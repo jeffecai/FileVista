@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, ArrowRight, ArrowUp, Eye, EyeOff, Images, LayoutGrid, List, Monitor, PanelRight, RefreshCw,
+  ArrowLeft, ArrowRight, ArrowUp, Eye, EyeOff, Images, LayoutGrid, List, Monitor, Palette, PanelRight, RefreshCw,
 } from 'lucide-react';
 import { activeTabOf, useApp } from '../store';
 import { splitPath, THIS_PC } from '../lib/fs-utils';
@@ -12,6 +12,7 @@ export default function PathBar({ paneId }: { paneId: 'a' | 'b' | 'c' | 'd' }) {
   const showHidden = useApp((s) => s.showHidden);
   const previewOpen = useApp((s) => s.previewOpen);
   const viewMode = useApp((s) => s.viewMode);
+  const colorMode = useApp((s) => s.colorMode);
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(path);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -102,6 +103,15 @@ export default function PathBar({ paneId }: { paneId: 'a' | 'b' | 'c' | 'd' }) {
       )}
 
       <div className="pathbar-actions">
+        <button
+          type="button"
+          className={`icon-btn ${colorMode ? 'is-on' : ''}`}
+          aria-label="彩色图标"
+          title={colorMode ? '切换为单色图标' : '切换为彩色图标'}
+          onClick={() => useApp.getState().toggleColorMode()}
+        >
+          <Palette size={14} strokeWidth={1.6} />
+        </button>
         <div className="view-switch">
           <button
             type="button"

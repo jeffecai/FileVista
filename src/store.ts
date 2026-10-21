@@ -73,6 +73,7 @@ interface AppState {
   runtimes: Record<string, Runtime>;
   ops: Record<string, Progress>;
   previewOpen: boolean;
+  colorMode: boolean;
   previewPath: string | null;
   previewData: PreviewData | null;
   paletteOpen: boolean;
@@ -117,6 +118,7 @@ interface AppState {
   closeConflict(): void;
   cancelOp(opId: string): void;
   togglePreview(): void;
+  toggleColorMode(): void;
   setPreview(path: string | null): void;
   loadPreview(path: string): Promise<void>;
   openPalette(): void;
@@ -212,6 +214,7 @@ function serialize(state: AppState): SessionData {
     showHidden: state.showHidden,
     compact: state.compact,
     previewOpen: state.previewOpen,
+    colorMode: state.colorMode,
     panes,
   };
 }
@@ -334,6 +337,7 @@ export const useApp = create<AppState>()((set, get) => {
     runtimes: {},
     ops: {},
     previewOpen: false,
+    colorMode: true,
     previewPath: null,
     previewData: null,
     paletteOpen: false,
@@ -401,6 +405,7 @@ export const useApp = create<AppState>()((set, get) => {
         showHidden: (legacy as unknown as SessionData | null)?.showHidden ?? false,
         compact: (legacy as unknown as SessionData | null)?.compact ?? false,
         previewOpen: (legacy as unknown as SessionData | null)?.previewOpen ?? false,
+        colorMode: (legacy as unknown as SessionData | null)?.colorMode ?? true,
         places,
         drives,
         ready: true,
@@ -456,6 +461,7 @@ export const useApp = create<AppState>()((set, get) => {
       useApp.subscribe((s, prev) => {
         if (s.panes !== prev.panes || s.activePane !== prev.activePane || s.showHidden !== prev.showHidden
           || s.compact !== prev.compact || s.previewOpen !== prev.previewOpen
+          || s.colorMode !== prev.colorMode
           || s.layout !== prev.layout || s.viewMode !== prev.viewMode) {
           scheduleSave();
         }
@@ -813,6 +819,10 @@ export const useApp = create<AppState>()((set, get) => {
 
     cancelOp(opId) {
       void api.cancel(opId);
+    },
+
+    toggleColorMode() {
+      set((s) => ({ colorMode: !s.colorMode }));
     },
 
     togglePreview() {

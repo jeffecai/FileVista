@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   AppWindow, File, FileArchive, FileImage, FileText, Film, Folder,
@@ -7,10 +7,30 @@ import api from '../api';
 import { activeTabOf, runtimeOf, useApp } from '../store';
 import { formatDate, formatSize, sortEntries, THIS_PC } from '../lib/fs-utils';
 import { useThumbnails } from '../lib/useThumbnails';
+import { useNativeFileIcons } from '../lib/useNativeFileIcons';
+import { iconForEntry } from '../lib/fileIcons';
 import DriveView from './DriveView';
 import type { Entry, PaneId, SortState } from '../types';
 
-function EntryIcon({ entry, size = 15 }: { entry: Entry; size?: number }) {
+function EntryIcon({ entry, size = 15, colorMode = false, nativeUrl }: {
+  entry: Entry;
+  size?: number;
+  colorMode?: boolean;
+  nativeUrl?: string | null;
+}) {
+  if (colorMode) {
+    const { src } = iconForEntry(entry);
+    return (
+      <img
+        className="file-icon"
+        src={nativeUrl ?? src}
+        width={size}
+        height={size}
+        alt=""
+        draggable={false}
+      />
+    );
+  }
   const props = { size, strokeWidth: 1.5 } as const;
   if (entry.category === 'folder') {
     return <Folder {...props} fill="currentColor" fillOpacity={0.09} />;
@@ -37,6 +57,7 @@ export default function FileList({ paneId }: { paneId: PaneId }) {
   const compact = useApp((s) => s.compact);
   const active = useApp((s) => s.activePane === paneId);
   const viewMode = useApp((s) => s.viewMode);
+  const colorMode = useApp((s) => s.colorMode);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [cols, setCols] = useState(1);
 
@@ -94,6 +115,24 @@ export default function FileList({ paneId }: { paneId: PaneId }) {
       .map((entry) => entry.path);
   }, [viewMode, virtualRows, cols, entries]);
   const thumbs = useThumbnails(thumbPaths, 240);
+
+  const visibleEntries = useMemo(() => {
+    if (virtualRows.length === 0) return [] as Entry[];
+    if (viewMode === 'list') {
+      const start = Math.max(0, virtualRows[0].index - 2);
+      const end = virtualRows[virtualRows.length - 1].index + 3;
+      return entries.slice(start, end);
+    }
+    const start = Math.max(0, (virtualRows[0].index - 1) * cols);
+    const end = (virtualRows[virtualRows.length - 1].index + 2) * cols;
+    return entries.slice(start, end);
+  }, [virtualRows, entries, cols, viewMode]);
+
+  const nativePaths = useMemo(
+    () => (colorMode ? visibleEntries.filter((entry) => iconForEntry(entry).native).map((entry) => entry.path) : [] as string[]),
+    [colorMode, visibleEntries],
+  );
+  const nativeIcons = useNativeFileIcons(nativePaths, viewMode === 'xlarge');
 
   const showMenu = async (event: React.MouseEvent, entry?: Entry, index?: number) => {
     event.preventDefault();
@@ -281,7 +320,7 @@ export default function FileList({ paneId }: { paneId: PaneId }) {
                   onDragStart={beginDrag(entry)}
                 >
                   <span className={`cell col-name ${entry.isDir ? 'is-dir' : ''}`}>
-                    <span className="entry-icon"><EntryIcon entry={entry} /></span>
+                    <span className="entry-icon"><EntryIcon entry={entry} size={colorMode ? 18 : 16} colorMode={colorMode} nativeUrl={nativeIcons[entry.path]} /></span>
                     <span className="entry-name" title={entry.name}>{entry.name}</span>
                     {entry.isSymlink && <span className="symlink-mark">link</span>}
                   </span>
@@ -323,7 +362,7 @@ export default function FileList({ paneId }: { paneId: PaneId }) {
                         {thumb ? (
                           <img src={thumb} alt="" draggable={false} loading="lazy" />
                         ) : (
-                          <span className="tile-icon"><EntryIcon entry={entry} size={viewMode === 'xlarge' ? 44 : 26} /></span>
+                          <span className="tile-icon"><EntryIcon entry={entry} size={viewMode === 'xlarge' ? 44 : 26} colorMode={colorMode} nativeUrl={nativeIcons[entry.path]} /></span>
                         )}
                       </div>
                       <div className="tile-name">{entry.name}</div>
