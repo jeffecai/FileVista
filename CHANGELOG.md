@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README rewritten with feature tables, screenshots, keyboard reference, and
   build instructions.
 
+## [0.4.1] - 2026-10-22
+
+### Fixed
+
+- Removed the brief normal-sized window that appeared before the main window
+  was maximized; the window is now shown only after the first renderer frame.
+
+### Changed
+
+- Closing the window now minimises it to the taskbar instead of exiting.
+- Quitting is explicit: use the tray icon menu or the taskbar jump-list task
+  "退出 FileVista".
+
 ## [0.4.0] - 2026-10-22
 
 ### Added

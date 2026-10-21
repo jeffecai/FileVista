@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.4.0-1D3B63?style=flat-square" alt="version" /></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.4.1-1D3B63?style=flat-square" alt="version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1D3B63?style=flat-square" alt="license" /></a>
   <img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-4B5055?style=flat-square" alt="platform" />
   <img src="https://img.shields.io/badge/electron-38-4B5055?style=flat-square" alt="electron" />
@@ -22,7 +22,7 @@
   <img src="docs/shots/main.png" alt="FileVista 双栏列表视图" />
 </p>
 
-> **状态**：0.4.0，可日常使用的 MVP。仅支持 Windows，暂无签名安装包。  
+> **状态**：0.4.1，可日常使用的 MVP。仅支持 Windows，暂无签名安装包。  
 > **English**：FileVista is a dual-pane Windows file manager with a restrained paper-and-ink interface, a command palette, native shell integration, and no telemetry.
 
 ---
@@ -99,6 +99,8 @@
 | **隐藏属性** | `koffi` 调用 `GetFileAttributesW`，不是按文件名猜测 |
 | **长路径** | 统一转换为 `\\?\` / `\\?\UNC\` 后再调用文件系统 |
 | **安全边界** | `contextIsolation` + `sandbox` + 关闭 `nodeIntegration` |
+| **关闭行为** | 点 `X` 最小化到任务栏；托盘右键或任务栏跳转列表的“退出 FileVista”才彻底退出 |
+| **启动** | 等首帧渲染完成后再显示窗口，避免空白/小窗闪烁 |
 
 ---
 
@@ -187,6 +189,15 @@ native\ShellMenu.exe --path .\README.md --dump
 ### 5. 与 Beyond Compare 比较
 
 同栏选中两项 → 右键“用 Beyond Compare 比较”；或当前栏选一项、另一栏也选一项 → “与另一栏选中项比较”。首次找不到 BC 时会弹出文件选择框，并记住路径。
+
+### 6. 最小化与退出
+
+点右上角 `X` 只是**最小化到任务栏**，文件操作与标签都保留。要彻底退出：
+
+- 右键任务栏图标 → **退出 FileVista**（Jump List 任务），或
+- 右键系统托盘里的 FileVista 图标 → **退出 FileVista**。
+
+这样误点关闭不会中断长复制，也不会丢失会话。
 
 ---
 

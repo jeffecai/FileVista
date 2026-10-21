@@ -53,7 +53,7 @@ export default function TitleBar() {
         <button type="button" className="win-btn" aria-label={maximized ? '还原' : '最大化'} onClick={() => control('max')}>
           {maximized ? <Copy size={11} strokeWidth={1.6} /> : <Square size={10} strokeWidth={1.6} />}
         </button>
-        <button type="button" className="win-btn win-btn-close" aria-label="关闭" onClick={() => control('close')}>
+        <button type="button" className="win-btn win-btn-close" aria-label="最小化到任务栏" title="最小化到任务栏（退出请右键任务栏图标或托盘图标）" onClick={() => control('close')}>
           <X size={13} strokeWidth={1.6} />
         </button>
       </div>

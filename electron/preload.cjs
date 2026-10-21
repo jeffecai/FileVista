@@ -18,6 +18,7 @@ const subscribe = (channel, callback) => {
 
 contextBridge.exposeInMainWorld('folio', {
   platform: process.platform,
+  appReady: () => ipcRenderer.send('folio:ready'),
 
   listDir: (path, showHidden) => invoke('folio:listDir', path, showHidden),
   drives: () => invoke('folio:drives'),

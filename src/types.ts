@@ -111,6 +111,7 @@ export interface SessionData {
 
 export interface FolioApi {
   platform: string;
+  appReady(): void;
   listDir(path: string, showHidden: boolean): Promise<DirListing>;
   drives(): Promise<Drive[]>;
   places(): Promise<Place[]>;

@@ -1,6 +1,6 @@
 'use strict';
 
-const { app, BrowserWindow, ipcMain, Menu, clipboard, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, clipboard, nativeImage } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -25,6 +25,8 @@ const shellMenuExe = path.join(__dirname, '..', 'native', 'ShellMenu.exe');
 
 let mainWindow = null;
 let dragSource = null;
+let tray = null;
+let isQuitting = false;
 
 function humanError(err) {
   const code = err && err.code;
@@ -141,10 +143,32 @@ function createWindow() {
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', (event) => { event.preventDefault(); });
 
-  win.once('ready-to-show', () => {
-    win.show();
+  let painted = false;
+  let contentReady = false;
+  let shown = false;
+  const showWhenReady = () => {
+    if (shown || !painted || !contentReady || win.isDestroyed()) return;
+    shown = true;
     if (state.maximized) win.maximize();
+    win.show();
+  };
+  win.once('ready-to-show', () => {
+    painted = true;
+    showWhenReady();
   });
+  const onRendererReady = (event) => {
+    if (event.sender !== win.webContents) return;
+    contentReady = true;
+    showWhenReady();
+  };
+  ipcMain.on('folio:ready', onRendererReady);
+  win.on('closed', () => ipcMain.removeListener('folio:ready', onRendererReady));
+  setTimeout(() => {
+    if (shown) return;
+    painted = true;
+    contentReady = true;
+    showWhenReady();
+  }, 1200);
 
   const saveBounds = () => {
     if (!mainWindow || mainWindow.isDestroyed()) return;
@@ -154,6 +178,11 @@ function createWindow() {
   win.on('resize', debounce(saveBounds, 400));
   win.on('move', debounce(saveBounds, 400));
   win.on('close', saveBounds);
+  win.on('close', (event) => {
+    if (isQuitting) return;
+    event.preventDefault();
+    win.minimize();
+  });
 
   win.on('maximize', () => {
     if (!win.webContents.isDestroyed()) win.webContents.send('folio:window-state', { maximized: true });
@@ -396,13 +425,57 @@ if (!gotLock) {
   app.quit();
 } else {
   app.setAppUserModelId('com.filevista.app');
-  app.on('second-instance', () => {
-    if (!mainWindow) return;
+
+  function showMainWindow() {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
     if (mainWindow.isMinimized()) mainWindow.restore();
+    if (!mainWindow.isVisible()) mainWindow.show();
     mainWindow.focus();
+  }
+
+  function createTray() {
+    if (tray) return;
+    const icon = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'icon-32.png'));
+    tray = new Tray(icon);
+    tray.setToolTip('FileVista');
+    tray.on('double-click', showMainWindow);
+    tray.setContextMenu(Menu.buildFromTemplate([
+      { label: '显示 FileVista', click: showMainWindow },
+      { type: 'separator' },
+      { label: '退出 FileVista', click: () => { isQuitting = true; app.quit(); } },
+    ]));
+  }
+
+  app.on('second-instance', (_event, argv) => {
+    if (argv.includes('--quit')) {
+      isQuitting = true;
+      app.quit();
+      return;
+    }
+    showMainWindow();
   });
 
+  app.on('before-quit', () => { isQuitting = true; });
+
   app.whenReady().then(async () => {
+    if (process.argv.includes('--quit')) {
+      app.exit(0);
+      return;
+    }
+    try {
+      app.setUserTasks([
+        {
+          program: process.execPath,
+          arguments: `"${app.getAppPath()}" --quit`,
+          iconPath: appIcon,
+          iconIndex: 0,
+          title: '退出 FileVista',
+          description: '彻底退出 FileVista',
+        },
+      ]);
+    } catch (err) {
+      console.error('SET_USER_TASKS_FAIL ' + err.message);
+    }
     if (process.argv.includes('--bctest-compare')) {
       const fsx = require('fs');
       const osx = require('os');
@@ -438,6 +511,7 @@ if (!gotLock) {
       return;
     }
     createWindow();
+    createTray();
     if (smokePath) {
       setTimeout(() => {
         console.error('SMOKE_TIMEOUT');

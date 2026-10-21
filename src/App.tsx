@@ -181,7 +181,7 @@ export default function App() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    void useApp.getState().init();
+    useApp.getState().init().finally(() => api.appReady());
   }, []);
 
   useEffect(() => {
