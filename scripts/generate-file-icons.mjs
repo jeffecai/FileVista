@@ -55,12 +55,7 @@ write('link', '#196B6B', '#35A3A3', '<path d="M21 27l7-7M19 31a5 5 0 0 1 0-7l3-3
 write('generic', '#6E747C', '#A6ABB3', '<path d="M15 22h18M15 27h18M15 32h10"/>');
 
 const folders = [
-  ['folder-blue', '#2F5FA8', '#5B8DEF'],
-  ['folder-teal', '#157A7A', '#2FB5A8'],
-  ['folder-violet', '#5A3E9E', '#8E6BE8'],
-  ['folder-amber', '#8C6318', '#D9A441'],
-  ['folder-rose', '#8E3157', '#D0668F'],
-  ['folder-green', '#2C6B45', '#4FA36B'],
+  ['folder-blue', '#4EA6F5', '#2C7BDB'],
 ];
 for (const [name, c1, c2] of folders) writeFolder(name, c1, c2);
 

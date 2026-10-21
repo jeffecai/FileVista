@@ -216,7 +216,7 @@ CSS-in-JS, or component libraries.
 - `scripts/generate-file-icons.mjs` generates the 27 SVG theme icons in
   `src/assets/icons/`; run `npm run icons` after editing the generator.
 - `src/lib/fileIcons.ts` maps extensions and special filenames to those icons.
-  Folder colours are chosen by hashing the folder name.
+  Folders use a single macOS-style blue icon; file types keep their own colours.
 - Executables, shortcuts and unrecognised types use Windows icons through the
   `folio:fileIcons` IPC channel (`app.getFileIcon`), cached in the main process.
 - `src/lib/useNativeFileIcons.ts` batches requests for visible rows only.

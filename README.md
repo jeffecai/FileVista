@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.5.0-1D3B63?style=flat-square" alt="version" /></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-0.5.1-1D3B63?style=flat-square" alt="version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1D3B63?style=flat-square" alt="license" /></a>
   <img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-4B5055?style=flat-square" alt="platform" />
   <img src="https://img.shields.io/badge/electron-38-4B5055?style=flat-square" alt="electron" />
@@ -22,7 +22,7 @@
   <img src="docs/shots/main.png" alt="FileVista 双栏列表视图" />
 </p>
 
-> **状态**：0.5.0，可日常使用的 MVP。仅支持 Windows，暂无签名安装包。  
+> **状态**：0.5.1，可日常使用的 MVP。仅支持 Windows，暂无签名安装包。  
 > **English**：FileVista is a dual-pane Windows file manager with a restrained paper-and-ink interface, a command palette, native shell integration, and no telemetry.
 
 ---
@@ -87,7 +87,7 @@
 | **列表** | 名称 / 大小 / 修改时间，列头排序，行内选中条 |
 | **小图标** | 网格布局，适合快速扫视 |
 | **超大图标** | 系统缩略图（图片 / 视频 / ICO），右侧自动打开图片预览 |
-| **彩色图标** | 文件夹按名称取 6 套配色；27 种常见类型各有独立彩色图标；EXE、快捷方式、未知类型读取 Windows 原生图标 |
+| **彩色图标** | 文件夹统一为 macOS 风格蓝色；27 种常见类型各有独立彩色图标；EXE、快捷方式、未知类型读取 Windows 原始图标 |
 | **预览抽屉** | 文本（≤256 KB）、图片（≤12 MB）、尺寸、修改时间、路径 |
 | **缩略图缓存** | 主进程按 `路径 + mtime + 尺寸` 缓存，最多 600 张，分批加载 |
 
@@ -128,11 +128,11 @@
 
 ### 安装版（推荐，任务栏固定）
 
-运行 `release\FileVista-Setup-0.5.0.exe`，按用户安装（无需管理员）。安装器会创建开始菜单和桌面快捷方式：
+运行 `release\FileVista-Setup-0.5.1.exe`，按用户安装（无需管理员）。安装器会创建开始菜单和桌面快捷方式：
 
 ```text
-release\FileVista-Setup-0.5.0.exe      # 安装版
-release\FileVista-Portable-0.5.0.exe   # 免安装便携版
+release\FileVista-Setup-0.5.1.exe      # 安装版
+release\FileVista-Portable-0.5.1.exe   # 免安装便携版
 ```
 
 安装后从开始菜单启动 FileVista，再右键任务栏图标 → **固定到任务栏**，固定的就是 **FileVista**。
@@ -233,9 +233,9 @@ native\ShellMenu.exe --path .\README.md --dump
 
 彩色模式下：
 
-- 文件夹根据名称哈希分配 6 套配色（蓝 / 青 / 紫 / 琥珀 / 玫瑰 / 绿）。
+- 所有文件夹统一使用 macOS 风格的蓝色文件夹图标，不再按名称换色。
 - 27 类文件各有独立图标：图片、视频、音频、压缩包、代码、文本、Markdown、JSON、配置、PDF、Word、Excel、PPT、字体、数据库、设计稿、3D、镜像、可执行文件、快捷方式等。
-- EXE、`.lnk`、`.url` 和未识别类型调用 Windows `app.getFileIcon`，显示系统真实图标。
+- EXE、`.lnk`、`.url` 和未识别类型调用 Windows 图标接口；快捷方式会解析目标程序后显示真实应用图标。
 
 ---
 
@@ -282,7 +282,7 @@ FileVista 的视觉母题是**对开账簿**：两栏是一本书摊开的两页
 - **字体**：Newsreader（标题/品牌）+ IBM Plex Sans（文件名）+ IBM Plex Mono（数字/路径），中文标题由 Noto Serif SC 承接。
 - **结构**：无卡片、无装饰渐变；标签是书页索引签，选中是 2px 墨蓝竖条。
 - **动效**：只有一个 120ms 的响应动画；容量条是唯一持续动画，并可被“减少动态效果”关闭。
-- **图标**：默认彩色模式，为 27 类文件绘制了独立卡片图标，文件夹按名称哈希取色；单色模式保留 Lucide 线条图标。
+- **图标**：默认彩色模式，为 27 类文件绘制了独立卡片图标，文件夹统一使用蓝色；单色模式保留 Lucide 线条图标。
 
 完整规范见 [docs/DESIGN.md](docs/DESIGN.md)。
 

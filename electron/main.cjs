@@ -1,6 +1,6 @@
 'use strict';
 
-const { app, BrowserWindow, ipcMain, Menu, Tray, clipboard, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, clipboard, nativeImage, shell } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -363,6 +363,34 @@ handle('folio:thumbnails', async (_event, paths, size) => {
 });
 
 const fileIconCache = new Map();
+async function resolveFileIcon(target, size) {
+  const lower = target.toLowerCase();
+  try {
+    if (lower.endsWith('.lnk')) {
+      const link = shell.readShortcutLink(target);
+      if (link && link.icon && /\.(ico|png)$/i.test(String(link.icon))) {
+        const iconPath = String(link.icon).replace(/%([^%]+)%/g, (match, name) => process.env[name] || match);
+        const direct = nativeImage.createFromPath(iconPath);
+        if (!direct.isEmpty()) return direct;
+      }
+      if (link && link.target) return app.getFileIcon(link.target, { size });
+    } else if (lower.endsWith('.url')) {
+      const text = await fsp.readFile(target, 'utf8').catch(() => '');
+      const match = text.match(/^\s*IconFile\s*=\s*(.+)$/mi);
+      if (match) {
+        const iconPath = match[1].trim().replace(/^"|"$/g, '')
+          .replace(/%([^%]+)%/g, (value, name) => process.env[name] || value);
+        const direct = nativeImage.createFromPath(iconPath);
+        if (!direct.isEmpty()) return direct;
+        try {
+          return await app.getFileIcon(iconPath, { size });
+        } catch { /* fall through */ }
+      }
+    }
+  } catch { /* not a shortcut or unreadable */ }
+  return app.getFileIcon(target, { size });
+}
+
 handle('folio:fileIcons', async (_event, paths, large) => {
   const list = Array.isArray(paths)
     ? paths.filter((p) => typeof p === 'string' && p.length > 0).slice(0, 120)
@@ -376,7 +404,7 @@ handle('folio:fileIcons', async (_event, paths, large) => {
       return;
     }
     try {
-      const image = await app.getFileIcon(target, { size });
+      const image = await resolveFileIcon(target, size);
       const url = image && !image.isEmpty() ? image.toDataURL() : null;
       fileIconCache.set(key, url);
       while (fileIconCache.size > 800) {

@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README rewritten with feature tables, screenshots, keyboard reference, and
   build instructions.
 
+## [0.5.1] - 2026-10-22
+
+### Changed
+
+- Folder icons now use a single macOS-style blue instead of six colours hashed
+  from the folder name.
+
+### Fixed
+
+- `.lnk` and `.url` items now resolve their target application icon instead of
+  falling back to a generic shortcut icon.
+- Avoid synchronously reading large `.exe` files when a shortcut specifies an
+  icon location, which could block the main process during directory listing.
+
 ## [0.5.0] - 2026-10-22
 
 ### Added

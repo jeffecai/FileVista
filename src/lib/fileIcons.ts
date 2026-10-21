@@ -51,30 +51,24 @@ const NAME_MAP: Record<string, string> = {
   '.env': 'config', 'package-lock.json': 'json',
 };
 
-const FOLDER_ICONS = [
-  'folder-blue', 'folder-teal', 'folder-violet',
-  'folder-amber', 'folder-rose', 'folder-green',
-];
+
 
 export interface IconChoice {
   src: string;
   native: boolean;
 }
 
-export function folderIcon(name: string): string {
-  let hash = 0;
-  for (let index = 0; index < name.length; index += 1) {
-    hash = (hash * 31 + name.charCodeAt(index)) >>> 0;
-  }
-  return iconUrl(FOLDER_ICONS[hash % FOLDER_ICONS.length]);
+export function folderIcon(): string {
+  return iconUrl('folder-blue');
 }
 
 export function iconForEntry(entry: Entry): IconChoice {
   if (entry.category === 'folder') {
-    return { src: folderIcon(entry.name), native: false };
+    return { src: folderIcon(), native: false };
   }
 
   const ext = entry.ext.replace(/^\./, '').toLowerCase();
+  if (ext === 'ico') return { src: iconUrl('image'), native: true };
   const named = NAME_MAP[entry.name.toLowerCase()];
   const mapped = named ?? EXT_MAP[ext];
   if (mapped) {
