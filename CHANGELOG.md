@@ -25,8 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Closing the window now minimises it to the taskbar instead of exiting.
-- Quitting is explicit: use the tray icon menu or the taskbar jump-list task
-  "退出 FileVista".
+- Quitting is explicit: use the tray icon menu, the taskbar jump-list task
+  "退出 FileVista", or the exit button on the taskbar thumbnail preview.
 
 ## [0.4.0] - 2026-10-22
 

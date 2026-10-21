@@ -143,6 +143,20 @@ function createWindow() {
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', (event) => { event.preventDefault(); });
 
+  try {
+    const thumbarIcon = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'icon-16.png'));
+    const thumbarReady = win.setThumbarButtons([
+      {
+        tooltip: '退出 FileVista',
+        icon: thumbarIcon,
+        click: () => { isQuitting = true; app.quit(); },
+      },
+    ]);
+    if (!thumbarReady) console.error('THUMBAR_NOT_AVAILABLE');
+  } catch (err) {
+    console.error('THUMBAR_FAIL ' + err.message);
+  }
+
   let painted = false;
   let contentReady = false;
   let shown = false;

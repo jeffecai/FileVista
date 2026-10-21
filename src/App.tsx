@@ -181,7 +181,12 @@ export default function App() {
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    useApp.getState().init().finally(() => api.appReady());
+    void useApp.getState().init();
+  }, []);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => api.appReady());
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
