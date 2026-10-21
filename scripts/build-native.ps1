@@ -19,7 +19,7 @@ if (-not (Test-Path -LiteralPath $source)) {
   throw "Missing source: $source"
 }
 
-& $csc /nologo /target:exe "/out:$output" `
+& $csc /nologo /target:exe "/out:$output" /codepage:65001 `
   /reference:System.Windows.Forms.dll `
   /reference:System.Drawing.dll `
   $source
@@ -28,4 +28,20 @@ if ($LASTEXITCODE -ne 0) {
   throw "Compilation failed with exit code $LASTEXITCODE"
 }
 
+$launcherSource = Join-Path $root 'native\FileVistaLauncher.cs'
+$launcherOutput = Join-Path $root 'FileVista.exe'
+
+if (-not (Test-Path -LiteralPath $launcherSource)) {
+  throw "Missing source: $launcherSource"
+}
+
+& $csc /nologo /target:winexe "/out:$launcherOutput" /codepage:65001 `
+  /reference:System.Windows.Forms.dll `
+  $launcherSource
+
+if ($LASTEXITCODE -ne 0) {
+  throw "Launcher compilation failed with exit code $LASTEXITCODE"
+}
+
 Write-Host "Built $output"
+Write-Host "Built $launcherOutput"

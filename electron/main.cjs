@@ -27,6 +27,7 @@ let mainWindow = null;
 let dragSource = null;
 let tray = null;
 let isQuitting = false;
+let closeHintShown = false;
 
 function humanError(err) {
   const code = err && err.code;
@@ -195,7 +196,18 @@ function createWindow() {
   win.on('close', (event) => {
     if (isQuitting) return;
     event.preventDefault();
-    win.minimize();
+    win.setSkipTaskbar(true);
+    win.hide();
+    if (tray && !closeHintShown) {
+      closeHintShown = true;
+      try {
+        tray.displayBalloon({
+          title: 'FileVista',
+          content: '已隐藏到托盘。双击托盘图标恢复，右键可退出。',
+          iconType: 'info',
+        });
+      } catch { /* balloons may be disabled */ }
+    }
   });
 
   win.on('maximize', () => {
@@ -442,6 +454,7 @@ if (!gotLock) {
 
   function showMainWindow() {
     if (!mainWindow || mainWindow.isDestroyed()) return;
+    mainWindow.setSkipTaskbar(false);
     if (mainWindow.isMinimized()) mainWindow.restore();
     if (!mainWindow.isVisible()) mainWindow.show();
     mainWindow.focus();

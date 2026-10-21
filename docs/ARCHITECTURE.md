@@ -130,12 +130,28 @@ Add a channel in all three places: main handler, preload wrapper, and
 
 - Frameless window with custom controls; `-webkit-app-region: drag` on the
   title bar.
+- The window is shown only after the renderer reports its first frame, so there
+  is no blank or normal-sized flash before the maximised window appears.
+- `X` hides the window and removes its taskbar button (`setSkipTaskbar(true)`);
+  the tray icon remains. `-` performs a normal minimise and keeps the taskbar
+  button.
+- Quitting is explicit: tray menu, taskbar thumbnail toolbar, or taskbar jump
+  list. `isQuitting` guards the `close` handler so those paths can actually
+  close the window.
 - Window bounds and maximised state live in `window.json`.
 - Tabs, layout, view mode, sort, preview visibility and active pane live in
   `session.json`, version 2. Version 1 sessions are migrated on load.
 - Both files live in `%APPDATA%\FileVista`.
 
 ## Native integrations
+
+### Launcher
+
+`FileVista.exe` is a tiny WinExe compiled from
+`native/FileVistaLauncher.cs`. It resolves `node_modules\electron\dist\electron.exe`
+next to itself, starts it with the project directory as the app path, and exits.
+Because it is a windowed subsystem executable, double-clicking it never opens a
+console window.
 
 ### Windows shell menu
 

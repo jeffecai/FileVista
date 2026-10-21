@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README rewritten with feature tables, screenshots, keyboard reference, and
   build instructions.
 
+## [0.4.2] - 2026-10-22
+
+### Added
+
+- `FileVista.exe`: a tiny windowed launcher so double-clicking starts the app
+  without a flashing console window.
+
+### Changed
+
+- `X` now hides the window to the notification area (the taskbar button
+  disappears); `-` still minimises to the taskbar.
+- First hide shows a tray balloon explaining how to restore or quit.
+- Restoring from the tray also restores the taskbar button.
+
 ## [0.4.1] - 2026-10-22
 
 ### Fixed
