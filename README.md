@@ -125,6 +125,20 @@
 - npm 10+
 - .NET Framework 4.x（仅重建原生右键桥时需要，Windows 自带）
 
+### 安装版（推荐，任务栏固定）
+
+运行 `release\FileVista-Setup-0.4.2.exe`，按用户安装（无需管理员）。安装器会创建开始菜单和桌面快捷方式：
+
+```text
+release\FileVista-Setup-0.4.2.exe      # 安装版
+release\FileVista-Portable-0.4.2.exe   # 免安装便携版
+```
+
+安装后从开始菜单启动 FileVista，再右键任务栏图标 → **固定到任务栏**，固定的就是 **FileVista**。
+
+> **为什么源码运行固定的是 Electron？**  
+> 源码模式下窗口属于 `electron.exe`，Windows 固定的是进程可执行文件，所以会保存成 Electron。安装版包装出了真正的 `FileVista.exe`，固定目标才是 FileVista。
+
 ### 从源码运行
 
 ```powershell
@@ -149,7 +163,16 @@ npm run build
 npm start
 ```
 
-> 构建产物是 `dist/` 静态资源 + Electron 运行时，没有安装包。安装包与代码签名在路线图中。
+> 源码运行不会生成安装包；需要安装版/便携版时运行 `npm run dist:win`，产物在 `release/`。
+
+### 打包安装版 / 便携版
+
+```powershell
+npm run dist:win     # NSIS 安装包 + 便携版，输出到 release/
+npm run pack:win     # 只生成 release/win-unpacked/ 目录，方便调试
+```
+
+打包后的 `FileVista.exe` 带有应用图标、版本信息和 `com.filevista.app` AUMID，任务栏固定与通知分组都按 FileVista 识别。
 
 ### 重建原生右键桥
 
@@ -322,6 +345,8 @@ npm run start          # 构建后启动
 npm run test           # 文件系统引擎自测（17 项，无窗口）
 npm run test:drag      # CDP 模拟外部拖放
 npm run build:native   # 重建 ShellMenu.exe 与 FileVista.exe
+npm run dist:win       # 安装包 + 便携版
+npm run pack:win       # 未打包目录（调试用）
 npm run smoke          # 构建并截图到 smoke*.png
 ```
 
@@ -354,7 +379,8 @@ npm run smoke          # 构建并截图到 smoke*.png
 ## 已知限制
 
 - 仅支持 Windows；没有 macOS / Linux 计划。
-- 没有安装包、自动更新或代码签名。
+- 没有代码签名，Windows SmartScreen 可能提示未知发布者；暂无自动更新。
+- 源码运行模式下任务栏固定的是 `electron.exe`；要固定为 FileVista 请使用安装版/打包版。
 - 右键原生菜单目前支持**单个**项目；多选使用 FileVista 主题菜单。
 - 原生 Shell 菜单由 Windows 绘制，跟随系统主题，应用无法改色。
 - 缩略图依赖 Windows 缩略图服务，部分格式只显示类型图标。

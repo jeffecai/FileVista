@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `FileVista.exe`: a tiny windowed launcher so double-clicking starts the app
   without a flashing console window.
+- NSIS installer and portable build via `electron-builder`
+  (`npm run dist:win`), with Start Menu and desktop shortcuts.
+- Packaged builds run as `FileVista.exe`, so taskbar pinning no longer captures
+  `electron.exe`.
 
 ### Changed
 

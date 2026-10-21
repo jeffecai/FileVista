@@ -17,11 +17,18 @@ const isDragTest = process.argv.includes('--dragtest');
 if (isDragTest) {
   app.setPath('userData', path.join(require('os').tmpdir(), 'filevista-dragtest-profile'));
 }
-const appIcon = path.join(__dirname, '..', 'assets', 'FileVista.ico');
+
+const unpackedRoot = path.join(process.resourcesPath, 'app.asar.unpacked');
+const assetFile = (name) => (app.isPackaged
+  ? path.join(unpackedRoot, 'assets', name)
+  : path.join(__dirname, '..', 'assets', name));
+const appIcon = assetFile('FileVista.ico');
 const smokeArg = process.argv.find((a) => a.startsWith('--smoke='));
 const smokePath = smokeArg ? path.resolve(smokeArg.slice('--smoke='.length)) : null;
-const dragIcon = path.join(__dirname, '..', 'assets', 'icon-256.png');
-const shellMenuExe = path.join(__dirname, '..', 'native', 'ShellMenu.exe');
+const dragIcon = assetFile('icon-256.png');
+const shellMenuExe = app.isPackaged
+  ? path.join(unpackedRoot, 'native', 'ShellMenu.exe')
+  : path.join(__dirname, '..', 'native', 'ShellMenu.exe');
 
 let mainWindow = null;
 let dragSource = null;
@@ -462,7 +469,7 @@ if (!gotLock) {
 
   function createTray() {
     if (tray) return;
-    const icon = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'icon-32.png'));
+    const icon = nativeImage.createFromPath(assetFile('icon-32.png'));
     tray = new Tray(icon);
     tray.setToolTip('FileVista');
     tray.on('double-click', showMainWindow);
@@ -493,7 +500,7 @@ if (!gotLock) {
       app.setUserTasks([
         {
           program: process.execPath,
-          arguments: `"${app.getAppPath()}" --quit`,
+          arguments: app.isPackaged ? '--quit' : `"${app.getAppPath()}" --quit`,
           iconPath: appIcon,
           iconIndex: 0,
           title: '退出 FileVista',

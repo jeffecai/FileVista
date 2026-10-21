@@ -28,3 +28,6 @@ jobs:
 
       - name: Rebuild native shell menu bridge
         run: npm run build:native
+
+      - name: Package Windows app
+        run: npx electron-builder --win dir

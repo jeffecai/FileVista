@@ -35,7 +35,9 @@
     "smoke": "npm run build && electron . --smoke=smoke.png",
     "test": "electron . --selftest",
     "test:drag": "electron . --dragtest",
-    "build:native": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-native.ps1"
+    "build:native": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-native.ps1",
+    "pack:win": "npm run build && npm run build:native && electron-builder --win dir",
+    "dist:win": "npm run build && npm run build:native && electron-builder --win nsis portable"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.2.6",
@@ -56,8 +58,51 @@
     "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "electron": "^38.2.0",
+    "electron-builder": "^26.15.3",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
     "wait-on": "^8.0.4"
+  },
+  "build": {
+    "appId": "com.filevista.app",
+    "productName": "FileVista",
+    "asar": true,
+    "asarUnpack": [
+      "native/**",
+      "assets/*.ico",
+      "assets/icon-*.png",
+      "node_modules/koffi/**"
+    ],
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "native/ShellMenu.exe",
+      "assets/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "assets/FileVista.ico",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FileVista",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}.${ext}"
+    }
   }
 }

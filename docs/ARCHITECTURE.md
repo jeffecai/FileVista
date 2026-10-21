@@ -189,6 +189,22 @@ Paths are passed as separate `spawn` arguments; no shell is involved.
 are cached by `path + mtime + size` (max 600 entries) and returned as data URLs.
 Only visible items in the extra-large view request thumbnails.
 
+## Packaging
+
+Packaging is configured in the `build` field of `package.json` and uses
+`electron-builder`:
+
+- `npm run pack:win` produces an unpacked app in `release/win-unpacked/`.
+- `npm run dist:win` produces an NSIS installer and a portable executable.
+- `asar` is enabled; `native/**`, icon assets and `node_modules/koffi/**` are
+  unpacked so the shell-menu helper and the Win32 FFI native module can be
+  executed from disk.
+- The packaged executable is `FileVista.exe` with product metadata and the
+  `com.filevista.app` AppUserModelID. This is what allows Windows to pin
+  FileVista itself instead of `electron.exe`.
+- The installer creates Start Menu and desktop shortcuts. Source-mode runs use
+  `electron.exe`, so pinning those windows captures Electron by design.
+
 ## Styling
 
 All visual decisions live in `src/styles.css` as custom properties. The design
