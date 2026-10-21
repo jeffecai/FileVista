@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest an improvement for FileVista
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the workflow, not only the widget. What are you trying to do?
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      placeholder: I often need to ...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other file managers that solve this, and how.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This affects the keyboard workflow
+        - label: This affects the visual design
+        - label: This requires a native (Win32/COM) integration

@@ -1,0 +1,63 @@
+{
+  "name": "filevista",
+  "productName": "FileVista",
+  "version": "0.4.0",
+  "private": true,
+  "description": "A modern dual-pane file manager for Windows with a paper-inspired interface",
+  "license": "MIT",
+  "author": {
+    "name": "jeffecai",
+    "url": "https://github.com/jeffecai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeffecai/FileVista.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jeffecai/FileVista/issues"
+  },
+  "homepage": "https://github.com/jeffecai/FileVista#readme",
+  "keywords": [
+    "file-manager",
+    "windows",
+    "electron",
+    "dual-pane",
+    "file-explorer"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite --port 5173\" \"wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
+    "build": "tsc --noEmit && vite build",
+    "start": "npm run build && electron .",
+    "smoke": "npm run build && electron . --smoke=smoke.png",
+    "test": "electron . --selftest",
+    "test:drag": "electron . --dragtest",
+    "build:native": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-native.ps1"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.6",
+    "@fontsource/ibm-plex-sans": "^5.2.6",
+    "@fontsource/newsreader": "^5.2.8",
+    "@fontsource/noto-serif-sc": "^5.3.1",
+    "@tanstack/react-virtual": "^3.13.12",
+    "koffi": "^3.3.3",
+    "lucide-react": "^0.544.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^38.2.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "wait-on": "^8.0.4"
+  }
+}
